@@ -6,19 +6,23 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="09be319d-671a-447b-819a-ba13317e5f86" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="400b353a-1262-46fa-870b-db041f7910a7" file="config.properties" />
 	<flow name="mulesoft-session-04Flow" doc:id="a871f825-dfef-4de5-aa23-765081659549" >
 		<http:listener doc:name="Listener" doc:id="95dbb047-f3d8-4cd5-9f9f-32f91380bc59" config-ref="HTTP_Listener_config" path="/test"/>
 		<logger level="INFO" doc:name="Logger" doc:id="2b3b6313-7ac9-4ffe-85c9-778f38a2b8d0" message="Log01"/>
-		<set-variable value='#[attributes.queryParams.name]' doc:name="Name" doc:id="a44861c7-539b-4128-aa27-b3932aaa2a70" variableName="name"/>
-		<set-variable value='#[attributes.queryParams.NameMethod]' doc:name="Method" doc:id="dec4c121-5431-4927-b6e6-17943ba58d75" variableName="NameMethod"/>
 		<ee:transform doc:name="Transform Message" doc:id="a32e1a82-750d-41c7-a954-0865d80f0446" >
 			<ee:message >
-				<ee:set-payload ><![CDATA["Sucess"]]></ee:set-payload>
+				<ee:set-payload ><![CDATA['${http.port}']]></ee:set-payload>
+				<ee:set-attributes ><![CDATA["Bene"]]></ee:set-attributes>
 			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="name" ><![CDATA[attributes.queryParams.name]]></ee:set-variable>
+				<ee:set-variable variableName="methodName" ><![CDATA[attributes.method]]></ee:set-variable>
+			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="2f947013-25a1-4970-b110-5d562f79220c" message='#[" Completed request"]'/>
+		<set-payload value="#['${http.port}']" doc:name="Set Payload" doc:id="64a86ee2-57f1-4745-b749-d2263b233de9" />
 	</flow>
 	<flow name="mulesoft-session-04-subflow-private" doc:id="b159b2fd-4490-456e-9e79-a10bf8f3cf91" >
 		<logger level="DEBUG" doc:name="Logger" doc:id="7bf5abee-56e5-4571-892e-4fb7fc4b40e7" message='#["Get user " ++ attributes.queryString ++ " Get method" ++ attributes.queryString]'/>

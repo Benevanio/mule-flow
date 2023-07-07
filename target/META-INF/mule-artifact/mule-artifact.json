@@ -13,8 +13,10 @@
       "exportedPackages": [],
       "exportedResources": [
         "application-types.xml",
+        "config.properties",
         "log4j2.xml",
-        "mulesoft-session-04.xml"
+        "mulesoft-session-04.xml",
+        "myconfig.yaml"
       ]
     }
   },

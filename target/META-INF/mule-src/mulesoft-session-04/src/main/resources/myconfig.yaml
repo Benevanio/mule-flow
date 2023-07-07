@@ -1,0 +1,7 @@
+http:
+ port: "8081"
+db:
+  username: bene
+  password: 1234
+  dbname: mongo
+messsage: You are using myconfig.yaml
