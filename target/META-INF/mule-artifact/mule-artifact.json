@@ -6,7 +6,7 @@
   "redeploymentEnabled": true,
   "name": "com.mycompany:mulesoft-session-04:1.0.0-SNAPSHOT",
   "minMuleVersion": "4.4.0",
-  "requiredProduct": "MULE",
+  "requiredProduct": "MULE_EE",
   "classLoaderModelLoaderDescriptor": {
     "id": "mule",
     "attributes": {
