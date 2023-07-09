@@ -226,13 +226,13 @@ flatten(a + b)]]></ee:set-payload>
 output application/json
 var a =[
 	{
-		name: "Benevanio",
+		name: "Francielle",
 		marks: 12,
 		id: 15,
-		org: "IBM"
+		org: "Mule"
 	},
 	{
-		name: "Berlan",
+		name: "Jessica",
 		marks: 124,
 		id: 19,
 		org: "Microsoft"
@@ -261,9 +261,63 @@ var a =[
 */]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<ee:transform doc:name="Function" doc:id="0bb3e815-442a-49c1-a672-d73c92dcfcb8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a=[{
+	name: "Bene",
+	id: 123,
+	"Maths": 69,
+	"Physics": 56,
+	"English": 67
+},
+	{
+	name: "Beniel",
+	id: 128,
+	"Maths": 99,
+	"Physics": 96,
+	"English": 90
+},
+	{
+	name: "Berlan",
+	id: 120,
+	"Maths": 99,
+	"Physics": 76,
+	"English": 89
+},]
+fun checkResult(marks: Number) = if ( marks > 50 ) "PASS" else "FAIL"
+fun createUnique(param0: String, param1: Number) = param0 ++ '-' ++ param1
+---
+createUnique("Bene", 3435)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="23e47731-3e76-4a3e-a421-2bb61f9acc0c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import modules::MyFirstexternal
+
+output application/java
+---
+MyFirstexternal::convertCase("Hello World")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 	<flow name="mulesoft-session-04-subflow-private" doc:id="b159b2fd-4490-456e-9e79-a10bf8f3cf91" >
 		<logger level="DEBUG" doc:name="Logger" doc:id="7bf5abee-56e5-4571-892e-4fb7fc4b40e7" message='#["Get user " ++ attributes.queryString ++ " Get method" ++ attributes.queryString]'/>
+	</flow>
+	<flow name="mulesoft-session-04Flow" doc:id="af432f69-b32c-4cc7-b825-4dfb451b90fe" >
+		<http:listener doc:name="Listener" doc:id="a1c3dbe9-668d-4790-99b4-5f2b1c7d04bb" config-ref="HTTP_Listener_config" path="/mule"/>
+		<ee:transform doc:name="Transform Message" doc:id="574c9907-6a08-4cea-ae94-9f225fbdf4a9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message:Mule::lookup("Welcome the my world 😀", "I Want to kill you")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 	<sub-flow name="mulesoft-session-04Sub_Flow" doc:id="3d84a8d1-2db4-40d1-a979-6e93daa6a02f" >
 		<set-payload value='#["Hi Im subFlow"]' doc:name="Set Payload" doc:id="319bbeda-ee13-4539-880e-d1835c3d845b" />
