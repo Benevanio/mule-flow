@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="400b353a-1262-46fa-870b-db041f7910a7" file="config.properties" />
-	<flow name="mulesoft-session-04Flow" doc:id="a871f825-dfef-4de5-aa23-765081659549" >
+	<flow name="mulesoft-session-04-main-flow" doc:id="a871f825-dfef-4de5-aa23-765081659549" >
 		<http:listener doc:name="Listener" doc:id="95dbb047-f3d8-4cd5-9f9f-32f91380bc59" config-ref="HTTP_Listener_config" path="/test"/>
 		<logger level="INFO" doc:name="Logger" doc:id="2b3b6313-7ac9-4ffe-85c9-778f38a2b8d0" message="Log01"/>
 		<ee:transform doc:name="Transform Message" doc:id="a32e1a82-750d-41c7-a954-0865d80f0446" >
@@ -24,10 +24,295 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		</ee:transform>
 		<set-payload value="#['${http.port}']" doc:name="Set Payload" doc:id="64a86ee2-57f1-4745-b749-d2263b233de9" />
 	</flow>
+	<flow name="mulesoft-session-05-map" doc:id="0b1641ce-222b-4926-b759-c02467667aca" >
+		<http:listener doc:name="Listener" doc:id="09280b7a-1523-4696-b951-37c4552414e7" config-ref="HTTP_Listener_config" path="/dataweave"/>
+		<ee:transform doc:name="map" doc:id="0a3f7153-d546-476d-8ef5-4da64fede9c9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a =[
+	{
+		name: "bene",
+		id: 82,
+		org: ["Google","Sysmap"]
+	},
+	{
+		name: "berlan",
+		id: 52,
+		org: ["Google","TESLA"]
+	},
+		{
+		name: "beniel",
+		id: 52,
+		org: ["IBM","Banco do Brasil"]
+	},
+		{
+		name: "benevan",
+		id: 22,
+		org: ["Google","Banco do Brasil"]
+	},
+]
+---
+/*
+ *a map(value, index) ->{
+	(index): value
+}
+* a map ((item, index) ->{
+	"userName": upper(item.name),
+	"Company": item.org,
+	//"uniqueID": item.name ++ "-" ++  item.id ++ "-" ++ item.org,
+	"Index da nossa aplicação": index
+}) 
+ */
+
+//
+a map ((bene, number) ->{
+	"CandidateName": upper(bene.name),
+	"Company":bene.org map{
+		"Company-Name": $ ++ bene.name
+	},
+	"Index da nossa aplicacação" : number
+})
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="mapObject" doc:id="44f32dd2-3696-4918-8665-51e9c4de1c10" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a = {
+	name :"Bene",
+	id :122,
+	org :"Sysmap"
+}
+---
+a mapObject((value, key, index) ->{
+	"Name": value,
+	"Key": key,
+	"": index
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Converting one Format to other" doc:id="5ce4d8f7-3b98-48a8-8518-41f8a241b086" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a =[
+	{
+		name: "Benevanio",
+		id: 123,
+		"organization": "Google"
+	},
+	{
+		name: "Beniel",
+		id: 124,
+		"organization": "Google"
+	},
+	{
+		name: "Berlan",
+		id: 15,
+		"organization": "Google"
+	},
+	{
+		name: "Berlanio",
+		id: 156,
+		"organization": "Google"
+	},
+	{
+		name: "Benevan",
+		id: 158,
+		"organization": "Google"
+	},
+]
+---
+EmployeeDetails:
+Employee : a map {
+	"Username = " : $.name,
+	"RollNo = " : $.id,
+	"Company = " : $.organization,
+	"UniqueID = " : "My name is " ++ $.name ++ " My Employee Id Is " ++ $.id ++ " I work in" ++ $.organization ++ "Nice to meet you too" 
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="reduce" doc:id="a588156c-e640-4603-bac9-09a2dfd01a9f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a =[
+	{
+		name: "Bene",
+		id: 134,
+		"org": "IBM"
+	},
+	{
+		name: "Berlan",
+		id: 138,
+		"org": "Microsoft"
+	},
+	{
+		name: "Beniel",
+		id: 130,
+		"org": "Microsoft"
+	}
+]
+---
+a reduce($ ++ $$ )]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="pluck" doc:id="97e984b3-26b7-4383-8b36-01ad2cf77da3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a ={
+	name: "Bene",
+	id:173,
+	org: "Microsoft"
+}
+---
+a pluck(value, key, index) ->{
+	"Value" : value,
+	"Key": key,
+	"Index": index
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="flatten" doc:id="aa79568c-af5e-465c-8796-d20b10939f48" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a =[
+	{
+		name: "Bene",
+		id:62,
+		org: "Microsoft"
+	},
+	{
+		name: "Mule",
+		id:67,
+		org: "Mulesoft CO"
+	},
+	{
+		name: "Bill Gates",
+		id:78,
+		org: "Microsoft"
+	},
+]
+var b =[
+	{
+		name: "Bene",
+		id:78,
+		org: "Microsoft"
+	},
+	{
+		name: "Mule",
+		id:98,
+		org: "Mulesoft CO"
+	},
+	{
+		name: "Bill Gates",
+		id:78,
+		org: "Microsoft"
+	},
+]
+---
+flatten(a + b)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="filter/upper/groupby/orderby" doc:id="4aa04268-c8e7-4cba-b0e3-dd56634ebb82" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a =[
+	{
+		name: "Francielle",
+		marks: 12,
+		id: 15,
+		org: "Mule"
+	},
+	{
+		name: "Jessica",
+		marks: 124,
+		id: 19,
+		org: "Microsoft"
+	},
+]
+---
+(a map{
+	name: $.name,
+	id: $.id,
+	org: $.org,
+	Status: if($.marks> 12) "PASS" else "FAIL"
+})
+
+/*
+  (a map{
+	name: $.name,
+	id: $.id,
+	org: $.org
+}) filter $.id > 123
+(a map{
+	name: $.name,
+	id: $.id,
+	org: $.org
+}) groupBy $.name
+ 
+*/]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Function" doc:id="0bb3e815-442a-49c1-a672-d73c92dcfcb8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a=[{
+	name: "Bene",
+	id: 123,
+	"Maths": 69,
+	"Physics": 56,
+	"Englihs": 67
+},
+	{
+	name: "Beniel",
+	id: 128,
+	"Maths": 99,
+	"Physics": 96,
+	"Englihs": 90
+},
+	{
+	name: "Berlan",
+	id: 120,
+	"Maths": 99,
+	"Physics": 76,
+	"Englihs": 89
+},]
+fun checkResult(marks: Number) = if ( marks > 50 ) "PASS" else "FAIL"
+fun createUnique(param0: String, param1: Number) = param0 ++ '-' ++ param1
+---
+createUnique("Bene", 3435)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 	<flow name="mulesoft-session-04-subflow-private" doc:id="b159b2fd-4490-456e-9e79-a10bf8f3cf91" >
 		<logger level="DEBUG" doc:name="Logger" doc:id="7bf5abee-56e5-4571-892e-4fb7fc4b40e7" message='#["Get user " ++ attributes.queryString ++ " Get method" ++ attributes.queryString]'/>
 	</flow>
 	<sub-flow name="mulesoft-session-04Sub_Flow" doc:id="3d84a8d1-2db4-40d1-a979-6e93daa6a02f" >
 		<set-payload value='#["Hi Im subFlow"]' doc:name="Set Payload" doc:id="319bbeda-ee13-4539-880e-d1835c3d845b" />
 	</sub-flow>
+	<flow name="mulesoft-session-05-dataweave" doc:id="ef7e3765-79f0-40a2-8ea6-41f8379a3b86" >
+		<http:listener doc:name="Listener" doc:id="ab402ff9-bc51-4113-a4f6-e54add7a7a9b" config-ref="HTTP_Listener_config" path="/data"/>
+		<ee:transform doc:name="Transform Message" doc:id="a8305769-09db-45f3-a7c5-064f9306ff63" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var a ={
+	"name": "bene",
+	"id": 1
+}
+output application/xml
+---
+h1 : a
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 </mule>
