@@ -54,7 +54,8 @@ a map ((bene, number) ->{
 	},
 	"Index da nossa aplicacação" : number
 })
-```
+
+````
 # explicacao 
 
 No inicio da primeira linha temos a definiçao do tipo de saida de dados em nosso sistema(Json), Na segunda parte temos a variavel "a" que é definida como uma matriz , logo em seguida nos temos o map.
@@ -63,9 +64,11 @@ O "map" é uma função em Dataweave que é usada para iterar sobre uma matriz e
 ## Demonstração
 
 demo no AnyPoint Studio
-![Demo-anypoint Studio](https://github.com/benetesla/mule-flow/assets/78994881/5e834b9f-8cc5-4730-a666-fd39da10f317)
 
-![demo-Postman](https://github.com/benetesla/mule-flow/assets/78994881/a324101b-f8bd-4f4b-881b-fc1b5cc322ee)
+![Demo-AnyPoint Studio](https://github.com/benetesla/mule-flow/assets/78994881/14bd46a8-d544-4a53-b3a7-5432d01cab4b)
+
+
+![Demo-Postman](https://github.com/benetesla/mule-flow/assets/78994881/a7358909-7fc0-49bb-8463-2e7f968a5ac3)
 
 ## Referência
 
